@@ -36,8 +36,8 @@ run_check() {
     "${script}" || echo "Warning: ${script} exited with status $?" >&2
 }
 
-run_check "${SCRIPT_DIR}/monitor_cpu.sh"
-run_check "${SCRIPT_DIR}/monitor_memory.sh"
-run_check "${SCRIPT_DIR}/monitor_external_node.sh"
-run_check "${SCRIPT_DIR}/monitor_network.sh"
-run_check "${SCRIPT_DIR}/monitor_network_traffic.sh"
+# Run all monitoring scripts
+run_check "${SCRIPT_DIR}/cpu/monitor_cpu.sh"
+run_check "${SCRIPT_DIR}/memory/monitor_memory.sh"
+run_check "${SCRIPT_DIR}/external_node/monitor_external_node.sh"
+run_check "${SCRIPT_DIR}/network/monitor_network.sh"
