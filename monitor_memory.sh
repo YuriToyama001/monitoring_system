@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Monitor memory usage and send notification to Redis if it exceeds threshold
+THRESHOLD=90
+
+# Get total and available memory in kilobytes
+TOTAL=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
+AVAILABLE=$(awk '/MemAvailable/ {print $2}' /proc/meminfo)
+
+# Calculate used memory and percentage
+USED=$((TOTAL-AVAILABLE))
+PERCENT=$((USED*100/TOTAL))
+
+# Check if the used memory percentage exceeds the threshold
+if [ "$PERCENT" -ge "$THRESHOLD" ]; then
+    ./notify_redis.sh memory ERROR "$PERCENT"
+else
+    ./notify_redis.sh memory OK "$PERCENT"
+fi
