@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Set the CPU usage threshold
-THRESHOLD=80
-# Set the monitoring interval in seconds
-INTERVAL=1
+# Set the CPU usage threshold from the environment or use the default.
+# Use CPU_THRESHOLD in monitor_all.conf to configure this value.
+THRESHOLD=${CPU_THRESHOLD:-80}
+INTERVAL=${INTERVAL:-1}
 
 # Get the CPU usage from /proc/stat
 read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat

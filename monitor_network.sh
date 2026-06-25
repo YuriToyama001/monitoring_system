@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Monitor network interface status and send notification to Redis if it is down or has issues
-INTERFACE=eth0
+# Monitor network interface status and send notification to Redis if it is down or has issues.
+# Use INTERFACE in monitor_all.conf to configure this value.
+INTERFACE=${INTERFACE:-eth0}
 
 # Set the base path for the network interface
 BASE=/sys/class/net/${INTERFACE}

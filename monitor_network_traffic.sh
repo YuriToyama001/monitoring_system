@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # interface to monitor
-INTERFACE=eth0
+INTERFACE=${INTERFACE:-eth0}
 # monitoring interval in seconds
-INTERVAL=1
+INTERVAL=${INTERVAL:-1}
 
 # threshold percentage of NIC speed to trigger an alert
-THRESHOLD_PERCENT=80
+THRESHOLD_PERCENT=${NETWORK_TRAFFIC_THRESHOLD:-80}
 
 BASE=/sys/class/net/${INTERFACE}
 

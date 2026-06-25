@@ -1,8 +1,9 @@
 #!/bin/bash
 
-HOST=172.16.1.151
+# External node host can be configured via NODE_HOST in monitor_all.conf.
+HOST=${NODE_HOST:-172.16.1.151}
 
-if ! ping -c 1 -W 1 ${HOST} >/dev/null
+if ! ping -c 1 -W 1 "${HOST}" >/dev/null
 then
     ./notify_redis.sh nodeA ERROR "PING_FAIL"
     exit 1

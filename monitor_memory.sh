@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Monitor memory usage and send notification to Redis if it exceeds threshold
-THRESHOLD=90
+# Use MEMORY_THRESHOLD in monitor_all.conf to configure this value.
+THRESHOLD=${MEMORY_THRESHOLD:-90}
 
 # Get total and available memory in kilobytes
 TOTAL=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
