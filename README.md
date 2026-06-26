@@ -23,6 +23,7 @@
 - `network/monitor_network.sh` - ネットワーク監視ラッパー（`network/monitor_network_status.sh` / `network/monitor_network_traffic.sh` を実行）
 - `network/monitor_network_status.sh` - ネットワークインターフェース状態チェック
 - `network/monitor_network_traffic.sh` - ネットワークトラフィックチェック
+- `network/monitor_network_gateway.sh` - インターフェースに設定されたデフォルトゲートウェイへの疎通チェック
 - `external_node/monitor_external_node.sh` - 外部ホストへのPing疎通チェック
 - `notify/notify_redis.sh` - 通知処理（現在はRedisコマンド部分がコメントアウトされ、標準出力へ出力）
 - `old/` - 旧バージョンのスクリプトを保存

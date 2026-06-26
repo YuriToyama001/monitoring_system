@@ -10,4 +10,5 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     network_common_init
     "${SCRIPT_DIR}/monitor_network_status.sh"
     "${SCRIPT_DIR}/monitor_network_traffic.sh"
+    "${SCRIPT_DIR}/monitor_network_gateway.sh"
 fi
