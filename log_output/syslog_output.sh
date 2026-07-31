@@ -10,7 +10,7 @@ VALUE=${3:-}
 
 TIMESTAMP=$(date '+%F %T')
 
-MESSAGE="resource=${RESOURCE} status=${STATUS} value=${VALUE}"
+MESSAGE="resource=${RESOURCE} status=${STATUS} message:${VALUE}"
 
 if command -v logger >/dev/null 2>&1; then
     logger -t monitoring_system -i "${MESSAGE}"

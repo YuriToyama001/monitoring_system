@@ -32,7 +32,7 @@ if [ -e "${LOG_FILE}" ] && [ ! -w "${LOG_FILE}" ]; then
   exit 1
 fi
 
-if ! printf '%s resource=%s status=%s value=%s\n' "${TIMESTAMP}" "${RESOURCE}" "${STATUS}" "${VALUE}" >> "${LOG_FILE}"; then
+if ! printf '%s resource=%s status=%s message:%s\n' "${TIMESTAMP}" "${RESOURCE}" "${STATUS}" "${VALUE}" >> "${LOG_FILE}"; then
   echo "Error: failed to write log entry to ${LOG_FILE}" >&2
   exit 1
 fi
