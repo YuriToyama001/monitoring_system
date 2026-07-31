@@ -1,0 +1,12 @@
+[Unit]
+Description=Run the monitoring system checks
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/mnt/c/Users/7822/workspace/monitoring_system
+ExecStart=/bin/bash /mnt/c/Users/7822/workspace/monitoring_system/monitor_all.sh
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[Install]
+WantedBy=multi-user.target
