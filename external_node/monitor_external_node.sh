@@ -11,16 +11,16 @@ HOST=${NODE_HOST:-172.16.1.151}
 
 if ! ping -c 1 -W 1 "${HOST}" >/dev/null
 then
-    "${SCRIPT_DIR}/../notify/notify.sh" nodeA ERROR "PING_FAIL"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" nodeA ERROR "PING_FAIL"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" nodeA ERROR "PING_FAIL"
     exit 1
 fi
 
 # if ! curl -fs http://${HOST}:8080/health >/dev/null
 # then
-#     ${SCRIPT_DIR}/../notify/notify.sh nodeA ERROR "SERVICE_FAIL"
+#     ${SCRIPT_DIR}/../notify/notify_dispatch.sh nodeA ERROR "SERVICE_FAIL"
 #     exit 1
 # fi
 
-${SCRIPT_DIR}/../notify/notify.sh nodeA OK "NORMAL"
+${SCRIPT_DIR}/../notify/notify_dispatch.sh nodeA OK "NORMAL"
 ${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" nodeA OK "NORMAL"

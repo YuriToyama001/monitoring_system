@@ -54,14 +54,14 @@ LOG_STATUS=UNKNOWN
 if [ -n "${CPU_TEMP}" ]; then
     if [ "${CPU_TEMP}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
         LOG_STATUS=ERROR
-        "${SCRIPT_DIR}/../notify/notify.sh" cpu_temp ERROR "TEMP=${CPU_TEMP}C"
+        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp ERROR "TEMP=${CPU_TEMP}C"
     else
         LOG_STATUS=OK
-        "${SCRIPT_DIR}/../notify/notify.sh" cpu_temp OK "TEMP=${CPU_TEMP}C"
+        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp OK "TEMP=${CPU_TEMP}C"
     fi
 else
     LOG_STATUS=WARNING
-    "${SCRIPT_DIR}/../notify/notify.sh" cpu_temp WARNING "TEMP=UNKNOWN"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp WARNING "TEMP=UNKNOWN"
 fi
 
 "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_temp "${LOG_STATUS}" "TEMP=${CPU_TEMP:-UNKNOWN}"

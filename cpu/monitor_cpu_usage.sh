@@ -41,5 +41,5 @@ if [ "$CPU_USAGE" -ge "$THRESHOLD" ]; then
     STATUS=ERROR
 fi
 
-"${SCRIPT_DIR}/../notify/notify.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"
+"${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"
 "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"

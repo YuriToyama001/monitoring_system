@@ -18,16 +18,16 @@ fi
 GATEWAY=$(ip route show default dev "${INTERFACE}" | awk '/default/ {print $3; exit}')
 
 if [ -z "${GATEWAY}" ]; then
-    "${SCRIPT_DIR}/../notify/notify.sh" network_gateway ERROR "GATEWAY_NOT_FOUND"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway ERROR "GATEWAY_NOT_FOUND"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway ERROR "GATEWAY_NOT_FOUND"
     exit 1
 fi
 
 if ping -c 1 -W 1 "${GATEWAY}" >/dev/null 2>&1; then
-    "${SCRIPT_DIR}/../notify/notify.sh" network_gateway OK "GATEWAY=${GATEWAY}"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway OK "GATEWAY=${GATEWAY}"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway OK "GATEWAY=${GATEWAY}"
 else
-    "${SCRIPT_DIR}/../notify/notify.sh" network_gateway ERROR "GATEWAY_DOWN:${GATEWAY}"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway ERROR "GATEWAY_DOWN:${GATEWAY}"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway ERROR "GATEWAY_DOWN:${GATEWAY}"
     exit 1
 fi

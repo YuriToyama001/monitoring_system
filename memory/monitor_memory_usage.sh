@@ -30,5 +30,5 @@ if [ "$PERCENT" -ge "$THRESHOLD" ]; then
     STATUS=ERROR
 fi
 
-"${SCRIPT_DIR}/../notify/notify.sh" memory "${STATUS}" "${PERCENT}"
+"${SCRIPT_DIR}/../notify/notify_dispatch.sh" memory "${STATUS}" "${PERCENT}"
 "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" memory "${STATUS}" "${PERCENT}"

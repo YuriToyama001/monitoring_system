@@ -12,7 +12,7 @@ if [ -f "${CONF_FILE}" ]; then
     source "${CONF_FILE}" >/dev/null 2>&1 || true
 fi
 
-NOTIFY_SCRIPT_PATH="${NOTIFY_SCRIPT:-${SCRIPT_DIR}/notify_redis.sh}"
+NOTIFY_SCRIPT_PATH="${NOTIFY_SCRIPT:-${SCRIPT_DIR}/notify_stdoutput.sh}"
 
 if [ ! -f "${NOTIFY_SCRIPT_PATH}" ]; then
     echo "Notifier not found: ${NOTIFY_SCRIPT_PATH}" >&2

@@ -12,7 +12,7 @@ notify_redis() {
     local status="$2"
     local value="$3"
 
-    "${SCRIPT_DIR}/../notify/notify.sh" "${resource}" "${status}" "${value}"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" "${resource}" "${status}" "${value}"
 }
 
 network_common_init() {

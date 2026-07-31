@@ -21,7 +21,7 @@ THRESHOLD_PERCENT=${NETWORK_TRAFFIC_THRESHOLD:-80}
 SPEED=$(cat "${BASE}/speed" 2>/dev/null)
 
 if ! [[ "${SPEED}" =~ ^[0-9]+$ ]]; then
-    "${SCRIPT_DIR}/../notify/notify.sh" network_traffic ERROR "SPEED_UNKNOWN"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic ERROR "SPEED_UNKNOWN"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic ERROR "SPEED_UNKNOWN"
     exit 1
 fi
@@ -47,9 +47,9 @@ MAX_PERCENT=$(( RX_PERCENT > TX_PERCENT ? RX_PERCENT : TX_PERCENT ))
 VALUE="RX=${RX_MBPS}Mbps,TX=${TX_MBPS}Mbps"
 
 if [ "${MAX_PERCENT}" -ge "${THRESHOLD_PERCENT}" ]; then
-    "${SCRIPT_DIR}/../notify/notify.sh" network_traffic ERROR "${VALUE}"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic ERROR "${VALUE}"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic ERROR "${VALUE}"
 else
-    "${SCRIPT_DIR}/../notify/notify.sh" network_traffic OK "${VALUE}"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic OK "${VALUE}"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic OK "${VALUE}"
 fi
