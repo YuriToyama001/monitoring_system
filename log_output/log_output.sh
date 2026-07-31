@@ -14,14 +14,21 @@ LOG_DIR=${LOG_DIR:-/var/log/monitor}
 LOG_FILE=${LOG_FILE:-${LOG_DIR}/monitor.log}
 
 mkdir -p "${LOG_DIR}" 2>/dev/null || {
-  LOG_DIR="${HOME:-/tmp}/.monitor"
-  LOG_FILE="${LOG_DIR}/monitor.log"
-  mkdir -p "${LOG_DIR}" || exit 1
+  echo "Error: cannot create log directory ${LOG_DIR}" >&2
+  exit 1
 }
 
 if [ ! -w "${LOG_DIR}" ]; then
-  echo "Cannot write to ${LOG_DIR}" >&2
+  echo "Error: cannot write to ${LOG_DIR}" >&2
   exit 1
 fi
 
-printf '%s resource=%s status=%s value=%s\n' "${TIMESTAMP}" "${RESOURCE}" "${STATUS}" "${VALUE}" >> "${LOG_FILE}"
+if [ -e "${LOG_FILE}" ] && [ ! -w "${LOG_FILE}" ]; then
+  echo "Error: cannot write to ${LOG_FILE}" >&2
+  exit 1
+fi
+
+if ! printf '%s resource=%s status=%s value=%s\n' "${TIMESTAMP}" "${RESOURCE}" "${STATUS}" "${VALUE}" >> "${LOG_FILE}"; then
+  echo "Error: failed to write log entry to ${LOG_FILE}" >&2
+  exit 1
+fi

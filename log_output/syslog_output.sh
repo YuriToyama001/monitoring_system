@@ -10,7 +10,12 @@ VALUE=${3:-}
 
 TIMESTAMP=$(date '+%F %T')
 
-MESSAGE="${TIMESTAMP} resource=${RESOURCE} status=${STATUS} value=${VALUE}"
+MESSAGE="resource=${RESOURCE} status=${STATUS} value=${VALUE}"
+
+if [ ! -w "${LOG_DIR}" ]; then
+  echo "Error: cannot write to ${LOG_DIR}" >&2
+  exit 1
+fi
 
 if command -v logger >/dev/null 2>&1; then
     logger -t monitoring_system "${MESSAGE}"
