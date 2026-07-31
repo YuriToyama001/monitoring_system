@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# 監視スクリプトをまとめて実行する統合ランチャー
 set -euo pipefail
 
 # Unified monitoring launcher for existing monitoring scripts.
@@ -23,6 +25,8 @@ export NODE_HOST
 export INTERVAL
 export REDIS_HOST
 export REDIS_PORT
+export NOTIFY_SCRIPT
+export LOG_OUTPUT_SCRIPT
 
 # Function to run a monitoring script and handle errors
 run_check() {

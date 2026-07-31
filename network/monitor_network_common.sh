@@ -1,15 +1,18 @@
 #!/bin/bash
 
+# ネットワーク監視スクリプトで共通して使う関数を定義する
 set -euo pipefail
 
+# このスクリプトの配置ディレクトリを取得する
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
+# 通知を行う共通ラッパー
 notify_redis() {
     local resource="$1"
     local status="$2"
     local value="$3"
 
-    "${SCRIPT_DIR}/../notify/notify_redis.sh" "${resource}" "${status}" "${value}"
+    "${SCRIPT_DIR}/../notify/notify.sh" "${resource}" "${status}" "${value}"
 }
 
 network_common_init() {

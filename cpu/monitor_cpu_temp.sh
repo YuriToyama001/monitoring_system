@@ -1,10 +1,14 @@
 #!/bin/bash
 
+# CPU 温度を監視して、閾値を超えたら通知するスクリプト
 set -euo pipefail
 
+# このスクリプトの配置ディレクトリを取得する
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# CPU 温度の閾値。環境変数で上書き可能
 CPU_TEMP_THRESHOLD=${CPU_TEMP_THRESHOLD:-85}
 
+# /sys から CPU 温度の生値を取得する
 get_cpu_temp_raw() {
     local zone type temp
 
@@ -45,13 +49,19 @@ normalize_temp() {
 
 CPU_TEMP_RAW=$(get_cpu_temp_raw)
 CPU_TEMP=$(normalize_temp "${CPU_TEMP_RAW}")
+LOG_STATUS=UNKNOWN
 
 if [ -n "${CPU_TEMP}" ]; then
     if [ "${CPU_TEMP}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
-        "${SCRIPT_DIR}/../notify/notify_redis.sh" cpu_temp ERROR "TEMP=${CPU_TEMP}C"
+        LOG_STATUS=ERROR
+        "${SCRIPT_DIR}/../notify/notify.sh" cpu_temp ERROR "TEMP=${CPU_TEMP}C"
     else
-        "${SCRIPT_DIR}/../notify/notify_redis.sh" cpu_temp OK "TEMP=${CPU_TEMP}C"
+        LOG_STATUS=OK
+        "${SCRIPT_DIR}/../notify/notify.sh" cpu_temp OK "TEMP=${CPU_TEMP}C"
     fi
 else
-    "${SCRIPT_DIR}/../notify/notify_redis.sh" cpu_temp WARNING "TEMP=UNKNOWN"
+    LOG_STATUS=WARNING
+    "${SCRIPT_DIR}/../notify/notify.sh" cpu_temp WARNING "TEMP=UNKNOWN"
 fi
+
+"${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_temp "${LOG_STATUS}" "TEMP=${CPU_TEMP:-UNKNOWN}"

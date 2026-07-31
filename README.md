@@ -25,7 +25,9 @@
 - `network/monitor_network_traffic.sh` - ネットワークトラフィックチェック
 - `network/monitor_network_gateway.sh` - インターフェースに設定されたデフォルトゲートウェイへの疎通チェック
 - `external_node/monitor_external_node.sh` - 外部ホストへのPing疎通チェック
-- `notify/notify_redis.sh` - 通知処理（現在はRedisコマンド部分がコメントアウトされ、標準出力へ出力）
+- `notify/notify_redis.sh` - 通知処理（Redis連携を想定した既定の通知入口）
+- `notify/notify.sh` - 通知入口のラッパー。既定では `notify_redis.sh` を呼び出す
+- `log_output/log_output.sh` - ログ出力専用の独立機能
 - `old/` - 旧バージョンのスクリプトを保存
 
 ## 事前準備
@@ -68,7 +70,9 @@ chmod +x monitor_all.sh cpu/monitor_cpu.sh cpu/monitor_cpu_usage.sh cpu/monitor_
 
 ## 通知について
 
-`notify/notify_redis.sh` は監視結果をRedisへ送信する想定です。現在はRedisコマンドがコメントアウトされており、代わりに標準出力へ結果を出力します。
+`notify/notify_redis.sh` は監視結果をRedisへ送信する想定です。`notify/notify.sh` は通知用の共通入口で、既定ではこのスクリプトを呼び出します。
+
+`log_output/log_output.sh` は通知機能とは独立したログ出力機能です。通知とは別に利用できます。
 
 Redis連携を有効にするには、`notify/notify_redis.sh` 内の `redis-cli` コマンドのコメントを解除し、必要に応じて `REDIS_HOST` / `REDIS_PORT` を設定してください。
 
@@ -80,5 +84,6 @@ Redis連携を有効にするには、`notify/notify_redis.sh` 内の `redis-cli
 ## 拡張
 
 - `notify/notify_redis.sh` でRedis通知を有効化
+- `log_output/log_output.sh` を別途利用してログを残す
 - `external_node/monitor_external_node.sh` にHTTPヘルスチェックなどの追加監視
 - cronやsystemdタイマーで定期実行

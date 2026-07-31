@@ -1,11 +1,16 @@
 #!/bin/bash
 
+# CPU 使用率を監視して閾値を超えたか確認するスクリプト
 set -euo pipefail
 
+# このスクリプトの配置ディレクトリを取得する
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# CPU 使用率の閾値。環境変数で上書き可能
 THRESHOLD=${CPU_THRESHOLD:-80}
+# CPU 使用率の測定間隔
 INTERVAL=${INTERVAL:-1}
 
+# /proc/stat から CPU 時間を読み取る
 read_cpu_times() {
     local cpu user nice system idle iowait irq softirq steal guest guest_nice
     read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
@@ -36,4 +41,5 @@ if [ "$CPU_USAGE" -ge "$THRESHOLD" ]; then
     STATUS=ERROR
 fi
 
-"${SCRIPT_DIR}/../notify/notify_redis.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"
+"${SCRIPT_DIR}/../notify/notify.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"
+"${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"

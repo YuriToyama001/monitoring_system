@@ -1,9 +1,11 @@
 #!/bin/bash
 
+# 監視イベントを Redis へ通知するためのスクリプト
 RESOURCE=$1
 STATUS=$2
 VALUE=$3
 
+# Redis 接続先の設定
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 
@@ -22,5 +24,3 @@ TIMESTAMP=$(date '+%F %T')
 # status "${STATUS}" \
 # value "${VALUE}" \
 # timestamp "${TIMESTAMP}"
-
-echo "Resource: ${RESOURCE}, Status: ${STATUS}, Value: ${VALUE}, Timestamp: ${TIMESTAMP}"
