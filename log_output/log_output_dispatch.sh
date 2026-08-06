@@ -15,9 +15,18 @@ if [ -f "${CONF_FILE}" ]; then
     source "${CONF_FILE}" >/dev/null 2>&1 || true
 fi
 
+# 設定値を実行中の子プロセスへ引き渡す
+export LOG_DIR LOG_FILE
+
 # ログ出力スクリプトのパスを決定する
 # 環境変数 LOG_OUTPUT_SCRIPT があればそれを優先し、なければ既定の log_output.sh を使う
-LOG_OUTPUT_SCRIPT_PATH="${LOG_OUTPUT_SCRIPT:-${SCRIPT_DIR}/log_output.sh}"
+LOG_OUTPUT_SCRIPT_PATH="${LOG_OUTPUT_SCRIPT:-}"
+
+if [ -z "${LOG_OUTPUT_SCRIPT_PATH}" ]; then
+    LOG_OUTPUT_SCRIPT_PATH="${SCRIPT_DIR}/log_output.sh"
+elif [[ "${LOG_OUTPUT_SCRIPT_PATH}" != /* ]]; then
+    LOG_OUTPUT_SCRIPT_PATH="${SCRIPT_DIR}/${LOG_OUTPUT_SCRIPT_PATH}"
+fi
 
 # 実行対象のログ出力スクリプトが存在するか確認する
 if [ ! -f "${LOG_OUTPUT_SCRIPT_PATH}" ]; then

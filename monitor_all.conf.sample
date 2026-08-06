@@ -35,3 +35,7 @@ NOTIFY_SCRIPT=
 # Default is log_output/log_output.sh.
 # Example: LOG_OUTPUT_SCRIPT=/path/to/custom_logger.sh
 LOG_OUTPUT_SCRIPT=
+
+# Log output directory for log_output.sh.
+# Default is /var/log/monitor, but workspace-local path is used here for portability.
+LOG_DIR=./log_output

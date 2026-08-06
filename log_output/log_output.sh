@@ -13,6 +13,10 @@ TIMESTAMP=$(date '+%F %T')
 LOG_DIR=${LOG_DIR:-/var/log/monitor}
 LOG_FILE=${LOG_FILE:-${LOG_DIR}/monitor.log}
 
+if [[ "${LOG_DIR}" != /* ]]; then
+  LOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)/${LOG_DIR}"
+fi
+
 mkdir -p "${LOG_DIR}" 2>/dev/null || {
   echo "Error: cannot create log directory ${LOG_DIR}" >&2
   exit 1
