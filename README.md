@@ -87,3 +87,21 @@ Redis連携を有効にするには、`notify/notify_redis.sh` 内の `redis-cli
 - `log_output/log_output.sh` を別途利用してログを残す
 - `external_node/monitor_external_node.sh` にHTTPヘルスチェックなどの追加監視
 - cronやsystemdタイマーで定期実行
+
+## systemdで定期実行する
+
+リポジトリ直下に `monitoring.service` と `monitoring.timer` を用意しています。Linuxのsystemd環境で次のように配置・有効化できます。
+
+```bash
+sudo cp monitoring.service /etc/systemd/system/
+sudo cp monitoring.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now monitoring.timer
+```
+
+確認コマンド:
+
+```bash
+sudo systemctl status monitoring.timer
+sudo systemctl list-timers --all | grep monitoring
+```

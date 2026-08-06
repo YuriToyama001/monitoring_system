@@ -1,0 +1,10 @@
+[Unit]
+Description=Run monitoring checks periodically
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=30sec
+Unit=monitoring.service
+
+[Install]
+WantedBy=timers.target
