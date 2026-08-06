@@ -8,50 +8,53 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # shellcheck disable=SC1090
 
 INTERFACE="${1:-eth0}"
-
-INTERVAL=${NETWORK_TRAFFIC_INTERVAL:-1}
-THRESHOLD_PERCENT=${NETWORK_TRAFFIC_THRESHOLD:-80}
+INTERVAL="${NETWORK_TRAFFIC_INTERVAL:-1}"
+THRESHOLD_PERCENT="${NETWORK_TRAFFIC_THRESHOLD:-80}"
 
 BASE="/sys/class/net/${INTERFACE}"
 
+notify_and_log() {
+    local status="$1"
+    local message="$2"
+
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic "${status}" "${message}"
+    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic "${status}" "${message}"
+}
+
 if [ ! -d "${BASE}" ]; then
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic FAITAL "IF_NOT_FOUND:${INTERFACE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic FAITAL "IF_NOT_FOUND:${INTERFACE}"
-    exit 1  
+    notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
+    exit 1
 fi
 
 SPEED=$(cat "${BASE}/speed" 2>/dev/null)
 
 if ! [[ "${SPEED}" =~ ^[0-9]+$ ]]; then
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic FAITAL "SPEED_UNKNOWN:${INTERFACE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic FAITAL "SPEED_UNKNOWN:${INTERFACE}"
+    notify_and_log "FAITAL" "SPEED_UNKNOWN:${INTERFACE}"
     exit 1
 fi
 
-RX1=$(cat "${BASE}/statistics/rx_bytes")
-TX1=$(cat "${BASE}/statistics/tx_bytes")
+rx_before=$(cat "${BASE}/statistics/rx_bytes")
+tx_before=$(cat "${BASE}/statistics/tx_bytes")
 
-sleep ${INTERVAL}
+sleep "${INTERVAL}"
 
-RX2=$(cat "${BASE}/statistics/rx_bytes")
-TX2=$(cat "${BASE}/statistics/tx_bytes")
+rx_after=$(cat "${BASE}/statistics/rx_bytes")
+tx_after=$(cat "${BASE}/statistics/tx_bytes")
 
-RX_BYTES=$((RX2 - RX1))
-TX_BYTES=$((TX2 - TX1))
+rx_bytes=$((rx_after - rx_before))
+tx_bytes=$((tx_after - tx_before))
 
-RX_MBPS=$((RX_BYTES * 8 / 1000 / 1000))
-TX_MBPS=$((TX_BYTES * 8 / 1000 / 1000))
+rx_mbps=$((rx_bytes * 8 / 1000 / 1000))
+tx_mbps=$((tx_bytes * 8 / 1000 / 1000))
 
-RX_PERCENT=$((RX_MBPS * 100 / SPEED))
-TX_PERCENT=$((TX_MBPS * 100 / SPEED))
+rx_percent=$((rx_mbps * 100 / SPEED))
+tx_percent=$((tx_mbps * 100 / SPEED))
 
-MAX_PERCENT=$(( RX_PERCENT > TX_PERCENT ? RX_PERCENT : TX_PERCENT ))
-VALUE="RX=${RX_MBPS}Mbps,TX=${TX_MBPS}Mbps:${INTERFACE}"
+max_percent=$(( rx_percent > tx_percent ? rx_percent : tx_percent ))
+value="RX=${rx_mbps}Mbps,TX=${tx_mbps}Mbps:${INTERFACE}"
 
-if [ "${MAX_PERCENT}" -ge "${THRESHOLD_PERCENT}" ]; then
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic ERROR "${VALUE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic ERROR "${VALUE}"
+if [ "${max_percent}" -ge "${THRESHOLD_PERCENT}" ]; then
+    notify_and_log "ERROR" "${value}"
 else
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_traffic OK "${VALUE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic OK "${VALUE}"
+    notify_and_log "OK" "${value}"
 fi
