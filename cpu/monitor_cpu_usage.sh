@@ -10,23 +10,33 @@ THRESHOLD=${CPU_THRESHOLD:-80}
 # CPU 使用率の測定間隔
 INTERVAL=${INTERVAL:-1}
 
+notify_and_log() {
+    local status="$1"
+    local message="$2"
+
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_usage "${status}" "${message}"
+    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_usage "${status}" "${message}"
+}
+
 # /proc/stat から CPU 時間を読み取る
 read_cpu_times() {
     local cpu user nice system idle iowait irq softirq steal guest guest_nice
+
     read cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
     echo "$((user + nice + system + idle + iowait + irq + softirq + steal)) $((idle + iowait))"
 }
 
 calculate_cpu_usage() {
-    local total1 idle1 total2 idle2 total_diff idle_diff
-    read -r total1 idle1 < <(read_cpu_times)
+    local total_before idle_before total_after idle_after total_diff idle_diff
+
+    read -r total_before idle_before < <(read_cpu_times)
     sleep "${INTERVAL}"
-    read -r total2 idle2 < <(read_cpu_times)
+    read -r total_after idle_after < <(read_cpu_times)
 
-    total_diff=$((total2 - total1))
-    idle_diff=$((idle2 - idle1))
+    total_diff=$((total_after - total_before))
+    idle_diff=$((idle_after - idle_before))
 
-    if [ "$total_diff" -le 0 ]; then
+    if [ "${total_diff}" -le 0 ]; then
         echo 0
         return
     fi
@@ -34,12 +44,11 @@ calculate_cpu_usage() {
     echo $((100 * (total_diff - idle_diff) / total_diff))
 }
 
-CPU_USAGE=$(calculate_cpu_usage)
-STATUS=OK
+cpu_usage=$(calculate_cpu_usage)
+status="OK"
 
-if [ "$CPU_USAGE" -ge "$THRESHOLD" ]; then
-    STATUS=ERROR
+if [ "${cpu_usage}" -ge "${THRESHOLD}" ]; then
+    status="ERROR"
 fi
 
-"${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"
-"${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_usage "${STATUS}" "CPU=${CPU_USAGE}%"
+notify_and_log "${status}" "CPU=${cpu_usage}%"

@@ -8,6 +8,14 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # CPU 温度の閾値。環境変数で上書き可能
 CPU_TEMP_THRESHOLD=${CPU_TEMP_THRESHOLD:-85}
 
+notify_and_log() {
+    local status="$1"
+    local message="$2"
+
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp "${status}" "${message}"
+    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_temp "${status}" "${message}"
+}
+
 # /sys から CPU 温度の生値を取得する
 get_cpu_temp_raw() {
     local zone type temp
@@ -47,21 +55,15 @@ normalize_temp() {
     fi
 }
 
-CPU_TEMP_RAW=$(get_cpu_temp_raw)
-CPU_TEMP=$(normalize_temp "${CPU_TEMP_RAW}")
-LOG_STATUS=UNKNOWN
+cpu_temp_raw=$(get_cpu_temp_raw)
+cpu_temp=$(normalize_temp "${cpu_temp_raw}")
 
-if [ -n "${CPU_TEMP}" ]; then
-    if [ "${CPU_TEMP}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
-        LOG_STATUS=ERROR
-        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp ERROR "TEMP=${CPU_TEMP}C"
+if [ -n "${cpu_temp}" ]; then
+    if [ "${cpu_temp}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
+        notify_and_log "ERROR" "TEMP=${cpu_temp}C"
     else
-        LOG_STATUS=OK
-        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp OK "TEMP=${CPU_TEMP}C"
+        notify_and_log "OK" "TEMP=${cpu_temp}C"
     fi
 else
-    LOG_STATUS=WARNING
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp WARNING "TEMP=UNKNOWN"
+    notify_and_log "WARNING" "TEMP=UNKNOWN"
 fi
-
-"${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_temp "${LOG_STATUS}" "TEMP=${CPU_TEMP:-UNKNOWN}"
