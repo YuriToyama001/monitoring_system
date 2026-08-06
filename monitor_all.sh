@@ -18,6 +18,8 @@ fi
 source "${CONF_FILE}"
 
 export INTERFACE
+export INTERFACE_1
+export INTERFACE_2
 export CPU_THRESHOLD
 export MEMORY_THRESHOLD
 export NETWORK_TRAFFIC_THRESHOLD
@@ -27,6 +29,9 @@ export REDIS_HOST
 export REDIS_PORT
 export NOTIFY_SCRIPT
 export LOG_OUTPUT_SCRIPT
+export ENABLE_GATEWAY_CHECK
+export ENABLE_GATEWAY_CHECK_1
+export ENABLE_GATEWAY_CHECK_2
 
 # Function to run a monitoring script and handle errors
 run_check() {

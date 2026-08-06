@@ -1,8 +1,18 @@
 # monitor_all.conf
 # Common runtime configuration for monitor_all.sh and underlying scripts.
 
-# Network interface to monitor
-INTERFACE=eth0
+# Network interfaces to monitor
+# Configure up to two interfaces with INTERFACE_1 and INTERFACE_2.
+INTERFACE_1=eth0
+INTERFACE_2=
+
+# Default gateway reachability check for all interfaces
+ENABLE_GATEWAY_CHECK=true
+
+# Per-interface gateway reachability check override
+# Set ENABLE_GATEWAY_CHECK_1=false to disable the gateway check for INTERFACE_1.
+ENABLE_GATEWAY_CHECK_1=true
+ENABLE_GATEWAY_CHECK_2=false
 
 # CPU usage warning threshold (%)
 CPU_THRESHOLD=80
