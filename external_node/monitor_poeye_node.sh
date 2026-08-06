@@ -23,4 +23,4 @@ fi
 # fi
 
 ${SCRIPT_DIR}/../notify/notify_dispatch.sh PO-EYE OK "NORMAL"
-${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" PO-EYE OK "NORMAL"
+${SCRIPT_DIR}/../log_output/log_output_dispatch.sh PO-EYE OK "NORMAL"

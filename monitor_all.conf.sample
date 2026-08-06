@@ -6,9 +6,6 @@
 INTERFACE_1=eth0
 INTERFACE_2=
 
-# Default gateway reachability check for all interfaces
-ENABLE_GATEWAY_CHECK=true
-
 # Per-interface gateway reachability check override
 # Set ENABLE_GATEWAY_CHECK_1=false to disable the gateway check for INTERFACE_1.
 ENABLE_GATEWAY_CHECK_1=true
@@ -26,11 +23,12 @@ MEMORY_THRESHOLD=90
 # Network traffic warning threshold (%)
 NETWORK_TRAFFIC_THRESHOLD=80
 
+# Interval in seconds for scripts that need a sleep interval
+NETWORK_TRAFFIC_INTERVAL=1
+
 # External node to ping
 NODE_HOST=172.16.1.151
 
-# Interval in seconds for scripts that need a sleep interval
-INTERVAL=1
 
 # Redis connection settings
 REDIS_HOST=127.0.0.1
