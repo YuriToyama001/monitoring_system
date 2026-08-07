@@ -18,27 +18,33 @@ notify_and_log() {
 
 # /sys から CPU 温度の生値を取得する
 get_cpu_temp_raw() {
-    local zone type temp
+    local zone type temp zone_temp
 
     for zone in /sys/class/thermal/thermal_zone*; do
-        [ -f "${zone}/temp" ] || continue
+        [ -r "${zone}/temp" ] || continue
 
-        if [ -f "${zone}/type" ]; then
+        zone_temp=$(<"${zone}/temp" 2>/dev/null || true)
+        [ -z "${zone_temp}" ] && continue
+
+        if [ -r "${zone}/type" ]; then
             type=$(<"${zone}/type" 2>/dev/null || true)
-            case "${type}" in
-                *cpu*|*package*|*x86_pkg*|*soc*|*core*|*thermal*)
-                    temp=$(<"${zone}/temp" 2>/dev/null || true)
-                    [ -n "${temp}" ] && break
-                    ;;
-            esac
+        else
+            type=""
         fi
+
+        case "${type}" in
+            *cpu*|*package*|*x86_pkg*|*soc*|*core*|*thermal*)
+                temp="${zone_temp}"
+                break
+                ;;
+        esac
     done
 
-    if [ -z "${temp:-}" ] && [ -f /sys/class/thermal/thermal_zone0/temp ]; then
+    if [ -z "${temp:-}" ] && [ -r /sys/class/thermal/thermal_zone0/temp ]; then
         temp=$(< /sys/class/thermal/thermal_zone0/temp 2>/dev/null || true)
     fi
 
-    echo "${temp:-}"
+    printf '%s\n' "${temp:-}"
 }
 
 normalize_temp() {
