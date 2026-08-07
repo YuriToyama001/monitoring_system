@@ -6,6 +6,7 @@ set -euo pipefail
 # このスクリプトの配置ディレクトリを取得する
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 ROOT_DIR=$(cd "${SCRIPT_DIR}/.." && pwd)
+COMMON_SCRIPT="${ROOT_DIR}/monitor_common.sh"
 CONF_FILE="${ROOT_DIR}/monitor_all.conf"
 
 if [ -f "${CONF_FILE}" ]; then
@@ -18,11 +19,7 @@ export INTERFACE_2
 export ENABLE_GATEWAY_CHECK_1
 export ENABLE_GATEWAY_CHECK_2
 
-run_monitor_script() {
-    local script_path="$1"
-    shift
-    "${script_path}" "$@" || true
-}
+source "${COMMON_SCRIPT}"
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     run_monitor_script "${SCRIPT_DIR}/monitor_network_status.sh" "${INTERFACE_1}"
