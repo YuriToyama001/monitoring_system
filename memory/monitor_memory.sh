@@ -12,5 +12,5 @@ source "${COMMON_SCRIPT}"
 
 # 直接実行された場合のみメモリ監視を起動する
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    run_monitor_script "${SCRIPT_DIR}/monitor_memory_usage.sh"
+    run_script_check "${SCRIPT_DIR}/monitor_memory_usage.sh"
 fi

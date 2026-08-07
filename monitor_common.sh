@@ -2,7 +2,7 @@
 
 # Shared helpers for monitoring scripts.
 
-run_monitor_check() {
+run_script_check() {
     local script_path="$1"
     shift || true
 
@@ -16,12 +16,4 @@ run_monitor_check() {
         echo "Warning: ${script_path} exited with status ${exit_code}" >&2
         return 0
     }
-}
-
-run_monitor_script() {
-    run_monitor_check "$@"
-}
-
-run_check() {
-    run_monitor_check "$@"
 }
