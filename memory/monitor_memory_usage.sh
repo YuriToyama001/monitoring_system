@@ -12,8 +12,8 @@ notify_and_log() {
     local status="$1"
     local value="$2"
 
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" memory "${status}" "${value}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" memory "${status}" "${value}"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" memory_usage "${status}" "${value}"
+    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" memory_usage "${status}" "${value}"
 }
 
 # /proc/meminfo からメモリ使用率を計算する
