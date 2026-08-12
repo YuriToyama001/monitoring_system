@@ -8,27 +8,30 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # shellcheck disable=SC1090
 
 INTERFACE="${1:-eth0}"
-
 BASE="/sys/class/net/${INTERFACE}"
 
+notify_and_log() {
+    local status="$1"
+    local message="$2"
+
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway "${status}" "${message}"
+    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway "${status}" "${message}"
+}
+
 if [ ! -d "${BASE}" ]; then
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway FAITAL "IF_NOT_FOUND:${INTERFACE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway FAITAL "IF_NOT_FOUND:${INTERFACE}"
+    notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
     exit 1
 fi
 
-GATEWAY=$(ip route show default dev "${INTERFACE}" | awk '/default/ {print $3; exit}')
+gateway=$(ip route show default dev "${INTERFACE}" | awk '/default/ {print $3; exit}')
 
-if [ -z "${GATEWAY}" ]; then
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway FAITAL "GATEWAY_NOT_FOUND:${INTERFACE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway FAITAL "GATEWAY_NOT_FOUND:${INTERFACE}"
+if [ -z "${gateway}" ]; then
+    notify_and_log "FAITAL" "GATEWAY_NOT_FOUND:${INTERFACE}"
     exit 1
 fi
 
-if ping -c 1 -W 1 "${GATEWAY}" >/dev/null 2>&1; then
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway OK "GATEWAY=${GATEWAY}:${INTERFACE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway OK "GATEWAY=${GATEWAY}:${INTERFACE}"
+if ping -c 1 -W 1 "${gateway}" >/dev/null 2>&1; then
+    notify_and_log "OK" "GATEWAY=${gateway}:${INTERFACE}"
 else
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" network_gateway ERROR "PING_FAILED:${GATEWAY}:${INTERFACE}"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway ERROR "PING_FAILED:${GATEWAY}:${INTERFACE}"
+    notify_and_log "ERROR" "PING_FAILED:${gateway}:${INTERFACE}"
 fi

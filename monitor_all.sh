@@ -16,6 +16,7 @@ fi
 
 # shellcheck disable=SC1090
 source "${CONF_FILE}"
+source "${SCRIPT_DIR}/monitor_common.sh"
 
 export INTERFACE
 export INTERFACE_1
@@ -33,20 +34,8 @@ export ENABLE_GATEWAY_CHECK
 export ENABLE_GATEWAY_CHECK_1
 export ENABLE_GATEWAY_CHECK_2
 
-# Function to run a monitoring script and handle errors
-run_check() {
-    local script="$1"
-
-    if [ ! -f "${script}" ]; then
-        echo "Missing script: ${script}" >&2
-        return 1
-    fi
-
-    "${script}" || echo "Warning: ${script} exited with status $?" >&2
-}
-
 # Run all monitoring scripts
-run_check "${SCRIPT_DIR}/cpu/monitor_cpu.sh"
-run_check "${SCRIPT_DIR}/memory/monitor_memory.sh"
-run_check "${SCRIPT_DIR}/external_node/monitor_external_node.sh"
-run_check "${SCRIPT_DIR}/network/monitor_network.sh"
+run_script_check "${SCRIPT_DIR}/cpu/monitor_cpu.sh"
+run_script_check "${SCRIPT_DIR}/memory/monitor_memory.sh"
+run_script_check "${SCRIPT_DIR}/external_node/monitor_external_node.sh"
+run_script_check "${SCRIPT_DIR}/network/monitor_network.sh"

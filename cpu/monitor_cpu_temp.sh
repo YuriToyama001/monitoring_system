@@ -8,29 +8,43 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # CPU 温度の閾値。環境変数で上書き可能
 CPU_TEMP_THRESHOLD=${CPU_TEMP_THRESHOLD:-85}
 
+notify_and_log() {
+    local status="$1"
+    local message="$2"
+
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp "${status}" "${message}"
+    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_temp "${status}" "${message}"
+}
+
 # /sys から CPU 温度の生値を取得する
 get_cpu_temp_raw() {
-    local zone type temp
+    local zone type temp zone_temp
 
     for zone in /sys/class/thermal/thermal_zone*; do
-        [ -f "${zone}/temp" ] || continue
+        [ -r "${zone}/temp" ] || continue
 
-        if [ -f "${zone}/type" ]; then
+        zone_temp=$(<"${zone}/temp" 2>/dev/null || true)
+        [ -z "${zone_temp}" ] && continue
+
+        if [ -r "${zone}/type" ]; then
             type=$(<"${zone}/type" 2>/dev/null || true)
-            case "${type}" in
-                *cpu*|*package*|*x86_pkg*|*soc*|*core*|*thermal*)
-                    temp=$(<"${zone}/temp" 2>/dev/null || true)
-                    [ -n "${temp}" ] && break
-                    ;;
-            esac
+        else
+            type=""
         fi
+
+        case "${type}" in
+            *cpu*|*package*|*x86_pkg*|*soc*|*core*|*thermal*)
+                temp="${zone_temp}"
+                break
+                ;;
+        esac
     done
 
-    if [ -z "${temp:-}" ] && [ -f /sys/class/thermal/thermal_zone0/temp ]; then
+    if [ -z "${temp:-}" ] && [ -r /sys/class/thermal/thermal_zone0/temp ]; then
         temp=$(< /sys/class/thermal/thermal_zone0/temp 2>/dev/null || true)
     fi
 
-    echo "${temp:-}"
+    printf '%s\n' "${temp:-}"
 }
 
 normalize_temp() {
@@ -47,21 +61,15 @@ normalize_temp() {
     fi
 }
 
-CPU_TEMP_RAW=$(get_cpu_temp_raw)
-CPU_TEMP=$(normalize_temp "${CPU_TEMP_RAW}")
-LOG_STATUS=UNKNOWN
+cpu_temp_raw=$(get_cpu_temp_raw)
+cpu_temp=$(normalize_temp "${cpu_temp_raw}")
 
-if [ -n "${CPU_TEMP}" ]; then
-    if [ "${CPU_TEMP}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
-        LOG_STATUS=ERROR
-        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp ERROR "TEMP=${CPU_TEMP}C"
+if [ -n "${cpu_temp}" ]; then
+    if [ "${cpu_temp}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
+        notify_and_log "ERROR" "TEMP=${cpu_temp}C"
     else
-        LOG_STATUS=OK
-        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp OK "TEMP=${CPU_TEMP}C"
+        notify_and_log "OK" "TEMP=${cpu_temp}C"
     fi
 else
-    LOG_STATUS=WARNING
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" cpu_temp WARNING "TEMP=UNKNOWN"
+    notify_and_log "WARNING" "TEMP=UNKNOWN"
 fi
-
-"${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" cpu_temp "${LOG_STATUS}" "TEMP=${CPU_TEMP:-UNKNOWN}"
