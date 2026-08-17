@@ -12,8 +12,8 @@ HOST=${POEYE_HOST:-172.16.1.151}
 main() {
     if ! ping -c 1 -W 1 "${HOST}" >/dev/null
     then
-        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" PO-EYE ERROR "PING_FAIL"
-        "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" PO-EYE ERROR "PING_FAIL"
+        "${SCRIPT_DIR}/../notify/notify_dispatch.sh" PO-EYE ERROR "PING_FAIL:${HOST}"
+        "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" PO-EYE ERROR "PING_FAIL:${HOST}"
         exit 1
     fi
 
@@ -23,8 +23,8 @@ main() {
     #     exit 1
     # fi
 
-    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" PO-EYE OK "NORMAL"
-    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" PO-EYE OK "NORMAL"
+    "${SCRIPT_DIR}/../notify/notify_dispatch.sh" PO-EYE OK "PING_OK:${HOST}"
+    "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" PO-EYE OK "PING_OK:${HOST}"
 }
 
 main
