@@ -43,7 +43,7 @@ main() {
         status="ERROR"
     fi
 
-    notify_and_log "${status}" "${usage_percent}"
+    notify_and_log "${status}" "MEMORY=${usage_percent}%"
 }
 
 main

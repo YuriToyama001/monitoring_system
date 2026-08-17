@@ -18,7 +18,7 @@ fi
 source "${CONF_FILE}"
 source "${SCRIPT_DIR}/monitor_common.sh"
 
-export INTERFACE
+# 環境変数の読み込み
 export INTERFACE_1
 export INTERFACE_2
 export CPU_THRESHOLD
@@ -30,7 +30,6 @@ export REDIS_HOST
 export REDIS_PORT
 export NOTIFY_SCRIPT
 export LOG_OUTPUT_SCRIPT
-export ENABLE_GATEWAY_CHECK
 export ENABLE_GATEWAY_CHECK_1
 export ENABLE_GATEWAY_CHECK_2
 
