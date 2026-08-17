@@ -27,7 +27,7 @@ NETWORK_TRAFFIC_THRESHOLD=80
 NETWORK_TRAFFIC_INTERVAL=1
 
 # External node to ping
-NODE_HOST=172.16.1.151
+POEYE_HOST=172.16.1.151
 
 
 # Redis connection settings
