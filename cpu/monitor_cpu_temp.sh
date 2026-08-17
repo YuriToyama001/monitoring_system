@@ -18,37 +18,32 @@ notify_and_log() {
 
 # /sys から CPU 温度の生値を取得する
 get_cpu_temp_raw() {
-    local zone type temp zone_temp
+    local zone type zone_temp
 
     for zone in /sys/class/thermal/thermal_zone*; do
         [ -r "${zone}/temp" ] || continue
-
-        zone_temp=$(<"${zone}/temp" 2>/dev/null || true)
-        [ -z "${zone_temp}" ] && continue
-
-        if [ -r "${zone}/type" ]; then
-            type=$(<"${zone}/type" 2>/dev/null || true)
-        else
-            type=""
-        fi
-
-        case "${type}" in
-            *cpu*|*package*|*x86_pkg*|*soc*|*core*|*thermal*)
-                temp="${zone_temp}"
-                break
-                ;;
-        esac
+        zone_temp=$(tr -d '\r\n\t ' < "${zone}/temp" 2>/dev/null || true)
+        [ -n "${zone_temp}" ] && {
+            printf '%s\n' "${zone_temp}"
+            return 0
+        }
     done
 
-    if [ -z "${temp:-}" ] && [ -r /sys/class/thermal/thermal_zone0/temp ]; then
-        temp=$(< /sys/class/thermal/thermal_zone0/temp 2>/dev/null || true)
-    fi
+    for zone in /sys/class/hwmon/hwmon*/temp*_input /sys/class/hwmon/hwmon*/temp_input; do
+        [ -r "${zone}" ] || continue
+        zone_temp=$(tr -d '\r\n\t ' < "${zone}" 2>/dev/null || true)
+        [ -n "${zone_temp}" ] && {
+            printf '%s\n' "${zone_temp}"
+            return 0
+        }
+    done
 
-    printf '%s\n' "${temp:-}"
+    printf '%s\n' ""
 }
 
 normalize_temp() {
-    local raw_temp=$1
+    local raw_temp=${1:-}
+    raw_temp=${raw_temp//[$'\r\n\t ']}
 
     if [[ "${raw_temp}" =~ ^[0-9]+$ ]]; then
         if [ "${raw_temp}" -ge 1000 ]; then
@@ -62,6 +57,7 @@ normalize_temp() {
 }
 
 cpu_temp_raw=$(get_cpu_temp_raw)
+
 cpu_temp=$(normalize_temp "${cpu_temp_raw}")
 
 if [ -n "${cpu_temp}" ]; then
