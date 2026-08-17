@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # 外部ノードのホスト名。monitor_all.conf で設定可能
-HOST=${POEYE_HOST:-172.16.1.151}
+HOST=${POEYE_HOST:-}
 
 main() {
     if ! ping -c 1 -W 1 "${HOST}" >/dev/null
