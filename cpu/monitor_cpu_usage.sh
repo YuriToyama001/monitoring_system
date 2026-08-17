@@ -44,11 +44,18 @@ calculate_cpu_usage() {
     echo $((100 * (total_diff - idle_diff) / total_diff))
 }
 
-cpu_usage=$(calculate_cpu_usage)
-status="OK"
+main() {
+    local cpu_usage
+    local status
 
-if [ "${cpu_usage}" -ge "${THRESHOLD}" ]; then
-    status="ERROR"
-fi
+    cpu_usage=$(calculate_cpu_usage)
+    status="OK"
 
-notify_and_log "${status}" "CPU=${cpu_usage}%"
+    if [ "${cpu_usage}" -ge "${THRESHOLD}" ]; then
+        status="ERROR"
+    fi
+
+    notify_and_log "${status}" "CPU=${cpu_usage}%"
+}
+
+main

@@ -10,7 +10,7 @@ VALUE=${3:-}
 
 TIMESTAMP=$(date '+%F %T')
 
-LOG_DIR=${LOG_DIR:-/var/log/monitor}
+LOG_DIR=${LOG_DIR:-./log_output}
 LOG_FILE=${LOG_FILE:-${LOG_DIR}/monitor.log}
 
 if [[ "${LOG_DIR}" != /* ]]; then
@@ -32,7 +32,11 @@ if [ -e "${LOG_FILE}" ] && [ ! -w "${LOG_FILE}" ]; then
   exit 1
 fi
 
-if ! printf '%s resource=%s status=%s message:%s\n' "${TIMESTAMP}" "${RESOURCE}" "${STATUS}" "${VALUE}" >> "${LOG_FILE}"; then
-  echo "Error: failed to write log entry to ${LOG_FILE}" >&2
-  exit 1
-fi
+main() {
+    if ! printf '%s resource=%s status=%s message:%s\n' "${TIMESTAMP}" "${RESOURCE}" "${STATUS}" "${VALUE}" >> "${LOG_FILE}"; then
+      echo "Error: failed to write log entry to ${LOG_FILE}" >&2
+      exit 1
+    fi
+}
+
+main

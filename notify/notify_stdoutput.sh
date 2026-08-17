@@ -7,4 +7,8 @@ VALUE=$3
 
 TIMESTAMP=$(date '+%F %T')
 
-echo "Timestamp: ${TIMESTAMP}, Resource: ${RESOURCE}, Status: ${STATUS}, Value: ${VALUE}"
+main() {
+    echo "Timestamp: ${TIMESTAMP}, Resource: ${RESOURCE}, Status: ${STATUS}, Value: ${VALUE}"
+}
+
+main

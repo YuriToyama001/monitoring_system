@@ -32,11 +32,18 @@ get_memory_usage() {
     echo $((used * 100 / total))
 }
 
-usage_percent=$(get_memory_usage)
-status="OK"
+main() {
+    local usage_percent
+    local status
 
-if [ "${usage_percent}" -ge "${THRESHOLD}" ]; then
-    status="ERROR"
-fi
+    usage_percent=$(get_memory_usage)
+    status="OK"
 
-notify_and_log "${status}" "${usage_percent}"
+    if [ "${usage_percent}" -ge "${THRESHOLD}" ]; then
+        status="ERROR"
+    fi
+
+    notify_and_log "${status}" "${usage_percent}"
+}
+
+main

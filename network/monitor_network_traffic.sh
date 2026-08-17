@@ -21,40 +21,49 @@ notify_and_log() {
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_traffic "${status}" "${message}"
 }
 
-if [ ! -d "${BASE}" ]; then
-    notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
-    exit 1
-fi
+main() {
+    local rx_before tx_before rx_after tx_after
+    local rx_bytes tx_bytes rx_mbps tx_mbps
+    local rx_percent tx_percent max_percent value
+    local SPEED
 
-SPEED=$(cat "${BASE}/speed" 2>/dev/null)
+    if [ ! -d "${BASE}" ]; then
+        notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
+        exit 1
+    fi
 
-if ! [[ "${SPEED}" =~ ^[0-9]+$ ]]; then
-    notify_and_log "FAITAL" "SPEED_UNKNOWN:${INTERFACE}"
-    exit 1
-fi
+    SPEED=$(cat "${BASE}/speed" 2>/dev/null)
 
-rx_before=$(cat "${BASE}/statistics/rx_bytes")
-tx_before=$(cat "${BASE}/statistics/tx_bytes")
+    if ! [[ "${SPEED}" =~ ^[0-9]+$ ]]; then
+        notify_and_log "FAITAL" "SPEED_UNKNOWN:${INTERFACE}"
+        exit 1
+    fi
 
-sleep "${INTERVAL}"
+    rx_before=$(cat "${BASE}/statistics/rx_bytes")
+    tx_before=$(cat "${BASE}/statistics/tx_bytes")
 
-rx_after=$(cat "${BASE}/statistics/rx_bytes")
-tx_after=$(cat "${BASE}/statistics/tx_bytes")
+    sleep "${INTERVAL}"
 
-rx_bytes=$((rx_after - rx_before))
-tx_bytes=$((tx_after - tx_before))
+    rx_after=$(cat "${BASE}/statistics/rx_bytes")
+    tx_after=$(cat "${BASE}/statistics/tx_bytes")
 
-rx_mbps=$((rx_bytes * 8 / 1000 / 1000))
-tx_mbps=$((tx_bytes * 8 / 1000 / 1000))
+    rx_bytes=$((rx_after - rx_before))
+    tx_bytes=$((tx_after - tx_before))
 
-rx_percent=$((rx_mbps * 100 / SPEED))
-tx_percent=$((tx_mbps * 100 / SPEED))
+    rx_mbps=$((rx_bytes * 8 / 1000 / 1000))
+    tx_mbps=$((tx_bytes * 8 / 1000 / 1000))
 
-max_percent=$(( rx_percent > tx_percent ? rx_percent : tx_percent ))
-value="RX=${rx_mbps}Mbps,TX=${tx_mbps}Mbps:${INTERFACE}"
+    rx_percent=$((rx_mbps * 100 / SPEED))
+    tx_percent=$((tx_mbps * 100 / SPEED))
 
-if [ "${max_percent}" -ge "${THRESHOLD_PERCENT}" ]; then
-    notify_and_log "ERROR" "${value}"
-else
-    notify_and_log "OK" "${value}"
-fi
+    max_percent=$(( rx_percent > tx_percent ? rx_percent : tx_percent ))
+    value="RX=${rx_mbps}Mbps,TX=${tx_mbps}Mbps:${INTERFACE}"
+
+    if [ "${max_percent}" -ge "${THRESHOLD_PERCENT}" ]; then
+        notify_and_log "ERROR" "${value}"
+    else
+        notify_and_log "OK" "${value}"
+    fi
+}
+
+main

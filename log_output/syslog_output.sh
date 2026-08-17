@@ -12,9 +12,13 @@ TIMESTAMP=$(date '+%F %T')
 
 MESSAGE="resource=${RESOURCE} status=${STATUS} message:${VALUE}"
 
-if command -v logger >/dev/null 2>&1; then
-    logger -t monitoring_system -i "${MESSAGE}"
-else
-    echo "logger command not available" >&2
-    exit 1
-fi
+main() {
+    if command -v logger >/dev/null 2>&1; then
+        logger -t monitoring_system -i "${MESSAGE}"
+    else
+        echo "logger command not available" >&2
+        exit 1
+    fi
+}
+
+main

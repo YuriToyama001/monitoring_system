@@ -56,16 +56,23 @@ normalize_temp() {
     fi
 }
 
-cpu_temp_raw=$(get_cpu_temp_raw)
+main() {
+    local cpu_temp_raw
+    local cpu_temp
 
-cpu_temp=$(normalize_temp "${cpu_temp_raw}")
+    cpu_temp_raw=$(get_cpu_temp_raw)
 
-if [ -n "${cpu_temp}" ]; then
-    if [ "${cpu_temp}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
-        notify_and_log "ERROR" "TEMP=${cpu_temp}C"
+    cpu_temp=$(normalize_temp "${cpu_temp_raw}")
+
+    if [ -n "${cpu_temp}" ]; then
+        if [ "${cpu_temp}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
+            notify_and_log "ERROR" "TEMP=${cpu_temp}C"
+        else
+            notify_and_log "OK" "TEMP=${cpu_temp}C"
+        fi
     else
-        notify_and_log "OK" "TEMP=${cpu_temp}C"
+        notify_and_log "WARNING" "TEMP=UNKNOWN"
     fi
-else
-    notify_and_log "WARNING" "TEMP=UNKNOWN"
-fi
+}
+
+main

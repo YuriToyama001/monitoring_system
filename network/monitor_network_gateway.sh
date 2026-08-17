@@ -18,20 +18,26 @@ notify_and_log() {
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" network_gateway "${status}" "${message}"
 }
 
-if [ ! -d "${BASE}" ]; then
-    notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
-    exit 1
-fi
+main() {
+    local gateway
 
-gateway=$(ip route show default dev "${INTERFACE}" | awk '/default/ {print $3; exit}')
+    if [ ! -d "${BASE}" ]; then
+        notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
+        exit 1
+    fi
 
-if [ -z "${gateway}" ]; then
-    notify_and_log "FAITAL" "GATEWAY_NOT_FOUND:${INTERFACE}"
-    exit 1
-fi
+    gateway=$(ip route show default dev "${INTERFACE}" | awk '/default/ {print $3; exit}')
 
-if ping -c 1 -W 1 "${gateway}" >/dev/null 2>&1; then
-    notify_and_log "OK" "GATEWAY=${gateway}:${INTERFACE}"
-else
-    notify_and_log "ERROR" "PING_FAILED:${gateway}:${INTERFACE}"
-fi
+    if [ -z "${gateway}" ]; then
+        notify_and_log "FAITAL" "GATEWAY_NOT_FOUND:${INTERFACE}"
+        exit 1
+    fi
+
+    if ping -c 1 -W 1 "${gateway}" >/dev/null 2>&1; then
+        notify_and_log "OK" "GATEWAY=${gateway}:${INTERFACE}"
+    else
+        notify_and_log "ERROR" "PING_FAILED:${gateway}:${INTERFACE}"
+    fi
+}
+
+main
