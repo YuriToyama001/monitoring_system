@@ -15,7 +15,7 @@ fi
 NOTIFY_SCRIPT_PATH="${NOTIFY_SCRIPT:-}"
 
 if [ -z "${NOTIFY_SCRIPT_PATH}" ]; then
-    NOTIFY_SCRIPT_PATH="${SCRIPT_DIR}/notify_stdoutput.sh"
+    NOTIFY_SCRIPT_PATH="${SCRIPT_DIR}/notify_dummy.sh"
 elif [[ "${NOTIFY_SCRIPT_PATH}" != /* ]]; then
     NOTIFY_SCRIPT_PATH="${SCRIPT_DIR}/${NOTIFY_SCRIPT_PATH}"
 fi
