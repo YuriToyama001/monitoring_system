@@ -23,7 +23,7 @@ main() {
     local operstate
 
     if [ ! -d "${BASE}" ]; then
-        notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
+        notify_and_log "FAITAL" "IF_NOT_FOUND IF=${INTERFACE}"
         exit 1
     fi
 
@@ -31,30 +31,30 @@ main() {
     operstate=$(cat "${BASE}/operstate" 2>/dev/null)
 
     if [ "${carrier}" = "0" ]; then
-        notify_and_log "ERROR" "LINK_DOWN:${INTERFACE}"
+        notify_and_log "ERROR" "LINK_DOWN IF=${INTERFACE}"
     fi
 
     case "${operstate}" in
         up)
-            notify_and_log "OK" "LINK_UP:${INTERFACE}"
+            notify_and_log "OK" "LINK_UP IF=${INTERFACE}"
             ;;
         down)
-            notify_and_log "ERROR" "IF_DOWN:${INTERFACE}"
+            notify_and_log "ERROR" "IF_DOWN IF=${INTERFACE}"
             ;;
         dormant)
-            notify_and_log "ERROR" "IF_DORMANT:${INTERFACE}"
+            notify_and_log "ERROR" "IF_DORMANT IF=${INTERFACE}"
             ;;
         lowerlayerdown)
-            notify_and_log "ERROR" "LOWER_LAYER_DOWN:${INTERFACE}"
+            notify_and_log "ERROR" "LOWER_LAYER_DOWN IF=${INTERFACE}"
             ;;
         testing)
-            notify_and_log "ERROR" "TESTING:${INTERFACE}"
+            notify_and_log "ERROR" "TESTING IF=${INTERFACE}"
             ;;
         unknown)
-            notify_and_log "WARNING" "STATE_UNKNOWN:${INTERFACE}"
+            notify_and_log "WARNING" "STATE_UNKNOWN IF=${INTERFACE}"
             ;;
         *)
-            notify_and_log "WARNING" "STATE_${operstate}:${INTERFACE}"
+            notify_and_log "WARNING" "STATE_${operstate} IF=${INTERFACE}"
             ;;
     esac
 }

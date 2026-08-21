@@ -22,21 +22,21 @@ main() {
     local gateway
 
     if [ ! -d "${BASE}" ]; then
-        notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
+        notify_and_log "FAITAL" "IF_NOT_FOUND IF=${INTERFACE}"
         exit 1
     fi
 
     gateway=$(ip route show default dev "${INTERFACE}" | awk '/default/ {print $3; exit}')
 
     if [ -z "${gateway}" ]; then
-        notify_and_log "FAITAL" "GATEWAY_NOT_FOUND:${INTERFACE}"
+        notify_and_log "FAITAL" "GATEWAY_NOT_FOUND IF=${INTERFACE}"
         exit 1
     fi
 
     if ping -c 1 -W 1 "${gateway}" >/dev/null 2>&1; then
-        notify_and_log "OK" "GATEWAY=${gateway}:${INTERFACE}"
+        notify_and_log "OK" "GATEWAY=${gateway} IF=${INTERFACE}"
     else
-        notify_and_log "ERROR" "PING_FAILED:${gateway}:${INTERFACE}"
+        notify_and_log "ERROR" "PING_FAILED:GATEWAY=${gateway} IF=${INTERFACE}"
     fi
 }
 

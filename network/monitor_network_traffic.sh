@@ -28,14 +28,14 @@ main() {
     local SPEED
 
     if [ ! -d "${BASE}" ]; then
-        notify_and_log "FAITAL" "IF_NOT_FOUND:${INTERFACE}"
+        notify_and_log "FAITAL" "IF_NOT_FOUND IF=${INTERFACE}"
         exit 1
     fi
 
     SPEED=$(cat "${BASE}/speed" 2>/dev/null)
 
     if ! [[ "${SPEED}" =~ ^[0-9]+$ ]]; then
-        notify_and_log "FAITAL" "SPEED_UNKNOWN:${INTERFACE}"
+        notify_and_log "FAITAL" "SPEED_UNKNOWN IF=${INTERFACE}"
         exit 1
     fi
 
@@ -57,7 +57,7 @@ main() {
     tx_percent=$((tx_mbps * 100 / SPEED))
 
     max_percent=$(( rx_percent > tx_percent ? rx_percent : tx_percent ))
-    value="RX=${rx_mbps}Mbps,TX=${tx_mbps}Mbps:${INTERFACE}"
+    value="RX=${rx_mbps}Mbps,TX=${tx_mbps}Mbps IF=${INTERFACE}"
 
     if [ "${max_percent}" -ge "${THRESHOLD_PERCENT}" ]; then
         notify_and_log "ERROR" "${value}"
