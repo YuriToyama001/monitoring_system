@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=oneshot
-WorkingDirectory=/mnt/c/Users/7822/workspace/monitoring_system
-ExecStart=/bin/bash /mnt/c/Users/7822/workspace/monitoring_system/monitor_all.sh
+WorkingDirectory=/home/okm/touyama/monitoring_system
+ExecStart=/bin/bash /home/okm/touyama/monitoring_system/monitor_all.sh
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 [Install]
