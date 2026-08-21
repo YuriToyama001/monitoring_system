@@ -10,9 +10,6 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 STRM_SERVER_HOST=${STREAMING_SERVER_HOST:-}
 STRM_UNIT_HOST=${STREAMING_UNIT_HOST:-}
 
-echo STRM_SERVER_HOST=${STRM_SERVER_HOST}
-echo STRM_UNIT_HOST=${STRM_UNIT_HOST}
-
 notify_and_log() {
     local status="$1"
     local message="$2"
