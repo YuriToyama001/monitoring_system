@@ -10,6 +10,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 STRM_SERVER_HOST=${STREAMING_SERVER_HOST:-}
 STRM_SERVER_PORT=${STREAMING_SERVER_PORT:-}
 STRM_UNIT_HOST=${STREAMING_UNIT_HOST:-}
+STRM_UNIT_PORT=${STREAMING_UNIT_PORT:-}
 
 notify_and_log() {
     local status="$1"
@@ -44,6 +45,7 @@ main() {
     ping_check "${STRM_SERVER_HOST}"
     port_check "${STRM_SERVER_HOST}" "${STRM_SERVER_PORT}"
     ping_check "${STRM_UNIT_HOST}"
+    port_check "${STRM_UNIT_HOST}" "${STRM_UNIT_PORT}"
 }
 
 main
