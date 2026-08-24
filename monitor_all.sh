@@ -25,7 +25,7 @@ export CPU_THRESHOLD
 export MEMORY_THRESHOLD
 export NETWORK_TRAFFIC_THRESHOLD
 export UR_HOST
-export UR_PORT
+export UR_PORTS
 export PLC_HOST
 export PLC_PORT
 export RH_HOST

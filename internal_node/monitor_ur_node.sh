@@ -8,7 +8,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # PLCノードのホスト名。monitor_all.conf で設定可能
 UR_HOST=${UR_HOST:-}
-UR_PORT=${UR_PORT:-}
+UR_PORTS=${UR_PORTS:-}
 
 notify_and_log() {
     local status="$1"
@@ -43,7 +43,11 @@ port_check() {
 
 main() {
     ping_check "${UR_HOST}"
-    port_check "${UR_HOST}" "${UR_PORT}"
+
+    for UR_PORT in ${UR_PORTS}; do
+        echo UR_PORT: "${UR_PORT}"
+        port_check "${UR_HOST}" "${UR_PORT}"
+    done
 }
 
 main
