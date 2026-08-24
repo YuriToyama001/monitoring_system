@@ -115,7 +115,7 @@ main() {
             local core_name=$(echo "$usage" | cut -d'=' -f1)
             local core_value=$(echo "$usage" | cut -d'=' -f2 | sed 's/%//')
             if [ "${core_value}" -ge "${THRESHOLD}" ]; then
-                core_status="ERROR"
+                core_status="WARNING"
                 break
             fi
         done
