@@ -6,7 +6,7 @@ set -euo pipefail
 # このスクリプトの配置ディレクトリを取得する
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# PLCノードのホスト名。monitor_all.conf で設定可能
+# URノードのホスト名。monitor_all.conf で設定可能
 UR_HOST=${UR_HOST:-}
 UR_PORTS=${UR_PORTS:-}
 
@@ -23,7 +23,6 @@ ping_check() {
     if ! ping -c 1 -W 1 "${host}" >/dev/null
     then
         notify_and_log "ERROR" "PING_FAIL HOST=${host}"
-        exit 1
     fi
 
     notify_and_log "OK" "PING_OK HOST=${host}"
@@ -35,7 +34,7 @@ port_check() {
     if ! nc -z -w 1 "${host}" "${port}" >/dev/null
     then
         notify_and_log "ERROR" "PORT_FAIL HOST=${host} PORT=${port}"
-        exit 1
+        # 複数のポートをチェックするためにexit 1は入れないこと
     fi
 
     notify_and_log "OK" "PORT_OK HOST=${host} PORT=${port}"
