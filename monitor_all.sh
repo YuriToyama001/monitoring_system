@@ -33,6 +33,8 @@ export RH_PORT
 export STREAMING_SERVER_HOST
 export STREAMING_SERVER_PORT
 export STREAMING_UNIT_HOST
+export MATCHING_SERVER_HOST
+export MATCHING_SERVER_PORT
 export INTERVAL
 export REDIS_HOST
 export REDIS_PORT
@@ -44,6 +46,6 @@ export ENABLE_GATEWAY_CHECK_2
 # Run all monitoring scripts
 run_script_check "${SCRIPT_DIR}/cpu/monitor_cpu.sh"
 run_script_check "${SCRIPT_DIR}/memory/monitor_memory.sh"
+run_script_check "${SCRIPT_DIR}/network/monitor_network.sh"
 run_script_check "${SCRIPT_DIR}/internal_node/monitor_internal_node.sh"
 run_script_check "${SCRIPT_DIR}/external_node/monitor_external_node.sh"
-run_script_check "${SCRIPT_DIR}/network/monitor_network.sh"

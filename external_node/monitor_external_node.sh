@@ -13,4 +13,5 @@ source "${COMMON_SCRIPT}"
 # 直接実行された場合のみ子スクリプトを起動する
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     run_script_check "${SCRIPT_DIR}/monitor_poeye_node.sh"
+    run_script_check "${SCRIPT_DIR}/monitor_matching_node.sh"
 fi
