@@ -29,6 +29,7 @@ main() {
 
     if [ ! -d "${BASE}" ]; then
         notify_and_log "FAITAL" "IF_NOT_FOUND IF=${INTERFACE}"
+        # インターフェースがない場合、実行エラーとして落とす
         exit 1
     fi
 
@@ -36,6 +37,7 @@ main() {
 
     if ! [[ "${SPEED}" =~ ^[0-9]+$ ]]; then
         notify_and_log "FAITAL" "SPEED_UNKNOWN IF=${INTERFACE}"
+        # インターフェースの速度が取得できない場合、実行エラーとして落とす
         exit 1
     fi
 
@@ -61,8 +63,10 @@ main() {
 
     if [ "${max_percent}" -ge "${THRESHOLD_PERCENT}" ]; then
         notify_and_log "ERROR" "${value}"
+        return
     else
         notify_and_log "OK" "${value}"
+        return
     fi
 }
 

@@ -67,11 +67,14 @@ main() {
     if [ -n "${cpu_temp}" ]; then
         if [ "${cpu_temp}" -ge "${CPU_TEMP_THRESHOLD}" ]; then
             notify_and_log "ERROR" "TEMP=${cpu_temp}C"
+            return
         else
             notify_and_log "OK" "TEMP=${cpu_temp}C"
+            return
         fi
     else
         notify_and_log "WARNING" "TEMP=UNKNOWN"
+        return
     fi
 }
 

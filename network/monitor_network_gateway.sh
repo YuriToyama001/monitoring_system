@@ -35,8 +35,10 @@ main() {
 
     if ping -c 1 -W 1 "${gateway}" >/dev/null 2>&1; then
         notify_and_log "OK" "GATEWAY=${gateway} IF=${INTERFACE}"
+        return
     else
         notify_and_log "ERROR" "PING_FAILED:GATEWAY=${gateway} IF=${INTERFACE}"
+        return
     fi
 }
 
