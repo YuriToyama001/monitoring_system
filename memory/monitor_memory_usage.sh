@@ -12,6 +12,9 @@ notify_and_log() {
     local status="$1"
     local value="$2"
 
+    #OKなら通知しない
+    if [ "${status}" = "OK" ]; then return; fi
+
     "${SCRIPT_DIR}/../notify/notify_dispatch.sh" memory_usage "${status}" "${value}"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" memory_usage "${status}" "${value}"
 }

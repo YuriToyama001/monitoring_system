@@ -16,6 +16,9 @@ notify_and_log() {
     local status="$1"
     local message="$2"
 
+    #OKなら通知しない
+    if [ "${status}" = "OK" ]; then return; fi
+
     "${SCRIPT_DIR}/../notify/notify_dispatch.sh" PO-EYE "${status}" "${message}"
     "${SCRIPT_DIR}/../log_output/log_output_dispatch.sh" PO-EYE "${status}" "${message}"
 }
